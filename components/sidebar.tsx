@@ -6,17 +6,15 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import {
-  Home,
-  MessageCircle,
-  BarChart3,
-  Shield,
-  TabletSmartphone,
+  LayoutDashboard,
+  FolderKanban,
+  Users,
   UserRound,
-  LogIn,
   LogOut,
   ChevronFirst,
   ChevronLast,
 } from "lucide-react"
+import { logout } from "@/lib/auth"
 
 type Item = {
   href: string
@@ -25,14 +23,10 @@ type Item = {
 }
 
 const items: Item[] = [
-  { href: "/", label: "Home", icon: Home },
-  { href: "/messages", label: "Messages", icon: MessageCircle },
-  { href: "/statistics", label: "Statistics", icon: BarChart3 },
-  { href: "/security", label: "Security", icon: Shield },
-  { href: "/devices", label: "Devices", icon: TabletSmartphone },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/projects", label: "Projects", icon: FolderKanban },
+  { href: "/users", label: "Users", icon: Users },
   { href: "/profile", label: "Profile", icon: UserRound },
-  { href: "/signin", label: "Signin", icon: LogIn },
-  { href: "/signup", label: "Signup", icon: LogOut },
 ]
 
 export function Sidebar({ onClose }: { onClose?: () => void }) {
@@ -56,8 +50,8 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
     >
       <div className="flex items-center justify-between gap-2 px-4 py-5">
         <div className="flex items-center gap-2">
-          <div className="size-9 rounded-xl bg-white/20 grid place-items-center font-bold">SH</div>
-          <span className={`${open ? "block" : "hidden"} text-sm font-semibold`}>Smart Home</span>
+          <div className="size-9 rounded-xl bg-white/20 grid place-items-center font-bold">ACT</div>
+          <span className={`${open ? "block" : "hidden"} text-sm font-semibold`}>ACT App</span>
         </div>
         <button
           aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
@@ -71,7 +65,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
       <nav className="mt-2 flex-1">
         <ul className="flex flex-col gap-1 px-3">
           {items.map(({ href, label, icon: Icon }) => {
-            const active = pathname === href || (href !== "/" && pathname?.startsWith(href))
+            const active = pathname === href || (href !== "/dashboard" && pathname?.startsWith(href))
             return (
               <li key={href}>
                 <Link
@@ -90,11 +84,19 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
         </ul>
       </nav>
 
-      <div className="px-3 pb-5 pt-2">
+      <div className="px-3 pb-5 pt-2 space-y-2">
+        <button
+          onClick={() => logout()}
+          className="group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-white/90 hover:bg-white/10 transition-colors"
+        >
+          <LogOut className="size-5 text-white" />
+          <span className={`${open ? "block" : "hidden"} text-sm`}>Logout</span>
+        </button>
         <div className={`rounded-2xl bg-white/10 p-3`}>
-          <p className="text-xs leading-5">{open ? "Control your home with ease." : "Tip"}</p>
+          <p className="text-xs leading-5">{open ? "Site Activity & Project Management" : "ACT"}</p>
         </div>
       </div>
     </aside>
   )
 }
+

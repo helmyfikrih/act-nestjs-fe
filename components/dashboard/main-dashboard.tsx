@@ -1,78 +1,67 @@
+import Link from "next/link"
+import { FolderKanban, Users, ClipboardList } from "lucide-react"
 import { WelcomeCard } from "@/components/dashboard/welcome-card"
-import { RoomCard } from "@/components/dashboard/room-card"
-import { DeviceCard } from "@/components/dashboard/device-card"
-import { AirConditioning } from "@/components/dashboard/air-conditioning"
-import { UsersWidget } from "@/components/dashboard/users"
-import { ConsumptionChart } from "@/components/dashboard/consumption-chart"
-import { Shortcuts } from "@/components/dashboard/shortcuts"
-import { LightPanels } from "@/components/dashboard/light-panels"
-import { Scenes } from "@/components/dashboard/scenes"
-import EnergyWidget from "@/components/dashboard/energy-widget"
 
 export function MainDashboard() {
   return (
     <div className="space-y-5">
       <WelcomeCard />
 
-      <div className="grid gap-5 lg:grid-cols-3">
-        {/* Left big column */}
-        <div className="space-y-5 lg:col-span-2">
-          {/* Rooms */}
-          <section className="rounded-2xl bg-card p-5 shadow-sm ring-1 ring-border">
-            <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-foreground">Rooms</h2>
-              <span className="text-[10px] text-muted-foreground">Master bed room ▾</span>
+      <div className="grid gap-5 md:grid-cols-3">
+        <Link href="/projects" className="group rounded-2xl bg-card p-6 shadow-sm ring-1 ring-border hover:ring-brand transition-all">
+          <div className="flex items-center gap-4">
+            <div className="size-12 rounded-xl bg-brand/10 flex items-center justify-center text-brand">
+              <FolderKanban className="size-6" />
             </div>
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-              {["Living Room", "Kitchen", "Bed Room", "Bathroom", "Bed Room", "Bathroom"].map((r, i) => (
-                <RoomCard key={i} title={r} />
-              ))}
+            <div>
+              <h3 className="font-semibold">My Projects</h3>
+              <p className="text-sm text-muted-foreground">View and manage projects</p>
             </div>
-          </section>
+          </div>
+        </Link>
 
-          {/* Popular Devices + Scenes */}
-          <section className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="rounded-2xl bg-card p-5 shadow-sm ring-1 ring-border">
-              <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-sm font-semibold text-foreground">Popular Devices</h2>
-
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <DeviceCard title="Refrigerator" icon="fridge" />
-                <DeviceCard title="Washer" icon="washer" />
-                <DeviceCard title="Desktop PC" icon="pc" />
-                <DeviceCard title="Air Conditioning" icon="ac" />
-              </div>
+        <Link href="/users" className="group rounded-2xl bg-card p-6 shadow-sm ring-1 ring-border hover:ring-brand transition-all">
+          <div className="flex items-center gap-4">
+            <div className="size-12 rounded-xl bg-brand/10 flex items-center justify-center text-brand">
+              <Users className="size-6" />
             </div>
-            <div className="rounded-2xl bg-card p-5 shadow-sm ring-1 ring-border">
-              <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-sm font-semibold text-foreground">Scene</h2>
-
-              </div>
-              <Scenes />
+            <div>
+              <h3 className="font-semibold">Team Members</h3>
+              <p className="text-sm text-muted-foreground">Manage user access</p>
             </div>
-          </section>
+          </div>
+        </Link>
 
-          {/* New energy/temperature widget inspired by provided design */}
-          <EnergyWidget />
-        </div>
-
-        {/* Right column */}
-        <div className="space-y-5">
-          <AirConditioning />
-          <UsersWidget />
+        <div className="rounded-2xl bg-card p-6 shadow-sm ring-1 ring-border">
+          <div className="flex items-center gap-4">
+            {/* Right Side (Illustration Placeholder) */}
+            <div className="relative lg:w-2/5 flex items-center justify-center">
+                <div className="w-full h-48 bg-white/10 rounded-2xl flex items-center justify-center border border-white/20 border-dashed">
+                    <span className="text-white/40 text-sm font-medium">ACT Illustration</span>
+                </div>
+            </div>
+            <div>
+              <h3 className="font-semibold">Activities</h3>
+              <p className="text-sm text-muted-foreground">Pending tasks</p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <ConsumptionChart />
+      <div className="rounded-2xl bg-card p-10 shadow-sm ring-1 ring-border text-center space-y-3">
+        <h2 className="text-xl font-semibold">Ready to start?</h2>
+        <p className="text-muted-foreground max-w-md mx-auto text-sm">
+          Select a project from the sidebar or click the button below to see your current assignments and activities.
+        </p>
+        <div className="pt-2">
+            <Link href="/projects">
+              <button className="bg-brand text-white px-6 py-2.5 rounded-xl font-medium hover:opacity-90 transition-opacity">
+                Go to Projects
+              </button>
+            </Link>
         </div>
-        <Shortcuts />
       </div>
-
-      <LightPanels />
-
     </div>
   )
 }
+

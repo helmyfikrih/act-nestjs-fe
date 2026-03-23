@@ -13,6 +13,8 @@ import {
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { ColorThemePicker } from "@/components/color-theme"
+import { getTokenPayload, logout } from "@/lib/auth"
+import Link from "next/link"
 
 interface TopbarProps {
   onMenuClick?: () => void
@@ -20,6 +22,10 @@ interface TopbarProps {
 
 export function Topbar({ onMenuClick }: TopbarProps) {
   const [q, setQ] = useState("")
+  const payload = getTokenPayload()
+  const userName = payload?.name || "User"
+  const userInitials = userName.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2)
+
 
   return (
     <header className="lg:-mx-7 sticky top-0 z-30 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border mb-6 rounded-xl lg:rounded-none">
@@ -41,7 +47,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search rooms, devices, or users..."
+              placeholder="Search projects, activities, or users..."
               className="w-full rounded-full border bg-background pl-9 pr-3 py-2 text-sm"
               aria-label="Search"
             />
@@ -62,9 +68,9 @@ export function Topbar({ onMenuClick }: TopbarProps) {
             <DropdownMenuContent align="end" className="w-64">
               <DropdownMenuLabel>Notifications</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Washer cycle completed</DropdownMenuItem>
-              <DropdownMenuItem>Front door locked</DropdownMenuItem>
-              <DropdownMenuItem>HVAC filter reminder</DropdownMenuItem>
+              <DropdownMenuItem>New project assigned</DropdownMenuItem>
+              <DropdownMenuItem>Permission updated</DropdownMenuItem>
+              <DropdownMenuItem>Security alert</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-muted-foreground">View all</DropdownMenuItem>
             </DropdownMenuContent>
@@ -100,24 +106,26 @@ export function Topbar({ onMenuClick }: TopbarProps) {
           <DropdownMenu>
             <DropdownMenuTrigger className="rounded-full p-1.5 hover:bg-muted focus:outline-none focus:ring-2">
               <Avatar className="size-8">
-                <AvatarFallback>JR</AvatarFallback>
+                <AvatarFallback>{userInitials}</AvatarFallback>
               </Avatar>
               <span className="sr-only">Open user menu</span>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel className="flex items-center gap-2">
                 <User className="size-4" />
-                Signed in as Jennifer
+                Signed in as {userName}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <a href="/profile">Profile</a>
+                <Link href="/profile">Profile</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <a href="/devices">My devices</a>
+                <Link href="/projects">My projects</Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive">Sign out</DropdownMenuItem>
+              <DropdownMenuItem className="text-destructive" onClick={() => logout()}>
+                Sign out
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
