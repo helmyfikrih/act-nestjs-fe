@@ -42,9 +42,23 @@ const getIcon = (name?: string) => {
   return iconMap[name] || Circle
 }
 
+const routeByMenuCode: Record<string, string> = {
+  SITE_PROFILE: "/sites",
+  SITE_PROFILE_CONFIG: "/sites/config",
+}
+
+const getMenuPath = (code: string) => {
+  if (routeByMenuCode[code]) return routeByMenuCode[code]
+  return `/${code.toLowerCase().replace(/_/g, "-")}`
+}
+
 const defaultItems = [
   { href: "/dashboard", label: "All Projects", icon: FolderKanban },
   { href: "/dashboard/profile", label: "Profile", icon: UserRound },
+  { href: "/dashboard/projects", label: "Projects", icon: FolderKanban },
+  { href: "/dashboard/users", label: "Users", icon: Users },
+  { href: "/dashboard/menus", label: "Menus", icon: MenuSquare },
+  { href: "/dashboard/roles", label: "Roles", icon: ShieldAlert },
 ]
 
 export function Sidebar({ onClose }: { onClose?: () => void }) {
@@ -137,9 +151,9 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
             </li>
           ) : projectId && projectMenus.length > 0 ? (
             <>
-               {projectMenus.map((menu) => {
+              {projectMenus.map((menu) => {
                 const Icon = getIcon(menu.code)
-                const menuPath = `/${menu.code.toLowerCase().replace(/_/g, '-')}`
+                const menuPath = getMenuPath(menu.code)
                 const fullPath = `/dashboard/${projectId}${menuPath}`
                 const active = pathname === fullPath || (pathname?.startsWith(fullPath) && menuPath !== "/")
                 const hasChildren = menu.children && menu.children.length > 0
@@ -162,7 +176,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
                       <ul className="flex flex-col gap-1 ml-6 mt-1 border-l border-white/10 pl-2">
                         {menu.children?.map((child) => {
                           const childIcon = getIcon(child.code)
-                          const childPath = `/${child.code.toLowerCase().replace(/_/g, '-')}`
+                          const childPath = getMenuPath(child.code)
                           const fullChildPath = `/dashboard/${projectId}${childPath}`
                           const childActive = pathname === fullChildPath
                           return (
@@ -212,5 +226,4 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
     </aside>
   )
 }
-
 
