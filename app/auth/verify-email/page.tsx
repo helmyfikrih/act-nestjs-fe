@@ -80,7 +80,7 @@ export default function VerifyEmailPage() {
             )}
             {status === "error" && (
               <Button asChild variant="outline" className="w-full">
-                <Link href="/resend-verification">Resend verification email</Link>
+                <Link href="/auth/resend-verification">Resend verification email</Link>
               </Button>
             )}
           </div>

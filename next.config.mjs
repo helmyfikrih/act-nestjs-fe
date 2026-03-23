@@ -12,7 +12,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  output: 'export',
+  // output: 'export', // Removed to support dynamic routes [projectId] at runtime
+
   ...(isProd ? {
     basePath: `/${repoName}`,
     assetPrefix: `/${repoName}/`,

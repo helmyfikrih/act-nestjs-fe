@@ -108,7 +108,7 @@ export default function SignInPage() {
             </p>
             <p>
               Didn&apos;t receive verification email?{" "}
-              <Link href="/resend-verification" className="text-brand hover:underline font-medium">
+              <Link href="/auth/resend-verification" className="text-brand hover:underline font-medium">
                 Resend
               </Link>
             </p>
