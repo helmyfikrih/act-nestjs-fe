@@ -57,8 +57,11 @@ export default function SiteProfileDetailPage() {
 
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [activeTab, setActiveTab] = useState("profile")
   const [profile, setProfile] = useState<SiteProfileResponse | null>(null)
   const [histories, setHistories] = useState<SiteHistory[]>([])
+  const [historyLoaded, setHistoryLoaded] = useState(false)
+  const [loadingHistory, setLoadingHistory] = useState(false)
   const [values, setValues] = useState<Record<string, any>>({})
 
   const fetchProfile = async () => {
@@ -66,12 +69,8 @@ export default function SiteProfileDetailPage() {
 
     try {
       setLoading(true)
-      const [response, historyItems] = await Promise.all([
-        getSiteProfile(projectId, siteId),
-        getSiteHistory(projectId, siteId),
-      ])
+      const response = await getSiteProfile(projectId, siteId)
       setProfile(response)
-      setHistories(historyItems)
 
       const initial: Record<string, any> = {}
       response.fields.forEach((field) => {
@@ -88,6 +87,27 @@ export default function SiteProfileDetailPage() {
   useEffect(() => {
     fetchProfile()
   }, [projectId, siteId])
+
+  const fetchHistory = async () => {
+    if (!projectId || !siteId) return
+
+    try {
+      setLoadingHistory(true)
+      const historyItems = await getSiteHistory(projectId, siteId)
+      setHistories(historyItems)
+      setHistoryLoaded(true)
+    } catch (error: any) {
+      toast.error(error.message || "Failed to load history")
+    } finally {
+      setLoadingHistory(false)
+    }
+  }
+
+  useEffect(() => {
+    if (activeTab === "history" && !historyLoaded) {
+      fetchHistory()
+    }
+  }, [activeTab, historyLoaded])
 
   const setFieldValue = (fieldKey: string, value: any) => {
     setValues((prev) => ({ ...prev, [fieldKey]: value }))
@@ -181,8 +201,9 @@ export default function SiteProfileDetailPage() {
 
       const updated = await saveSiteProfile(projectId, siteId, payload)
       setProfile(updated)
-      const historyItems = await getSiteHistory(projectId, siteId)
-      setHistories(historyItems)
+      if (historyLoaded) {
+        await fetchHistory()
+      }
       toast.success("Site profile saved")
     } catch (error: any) {
       toast.error(error.message || "Failed to save profile")
@@ -231,7 +252,11 @@ export default function SiteProfileDetailPage() {
         </div>
       </div>
 
-      <Tabs defaultValue="profile" className="w-full">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="w-full"
+      >
         <TabsList className="grid w-full max-w-sm grid-cols-2">
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="history">History</TabsTrigger>
@@ -286,7 +311,11 @@ export default function SiteProfileDetailPage() {
               <CardDescription>Track changes for site master and profile values.</CardDescription>
             </CardHeader>
             <CardContent>
-              {histories.length === 0 ? (
+              {loadingHistory ? (
+                <div className="py-8 flex justify-center">
+                  <Loader2 className="h-5 w-5 animate-spin text-brand" />
+                </div>
+              ) : histories.length === 0 ? (
                 <p className="text-sm text-muted-foreground">No history available yet.</p>
               ) : (
                 <div className="space-y-3">

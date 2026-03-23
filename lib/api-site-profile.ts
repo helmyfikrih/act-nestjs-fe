@@ -49,16 +49,17 @@ export interface ProjectSiteProfileConfigItem {
 
 export interface SiteProfileHistory {
   id: string;
+  projectId?: string;
   action: string;
-  beforeJson: any[];
-  afterJson: any[];
+  beforeJson?: any[];
+  afterJson?: any[];
   changedBy?: string | null;
   changedAt: string;
   changedByUser?: {
     id: string;
     email: string;
     name: string;
-  };
+  } | null;
 }
 
 export interface SiteHistory {
@@ -200,6 +201,18 @@ export async function getSiteProfileConfigHistory(
 ): Promise<SiteProfileHistory[]> {
   return apiFetch<SiteProfileHistory[]>(
     `/projects/${projectId}/site-profile/config/history`,
+    {
+      headers: projectHeaders(projectId),
+    },
+  );
+}
+
+export async function getSiteProfileConfigHistoryDetail(
+  projectId: string,
+  historyId: string,
+): Promise<SiteProfileHistory> {
+  return apiFetch<SiteProfileHistory>(
+    `/projects/${projectId}/site-profile/config/history/${historyId}`,
     {
       headers: projectHeaders(projectId),
     },
