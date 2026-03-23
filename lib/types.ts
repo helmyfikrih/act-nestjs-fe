@@ -5,11 +5,23 @@ export interface Project {
 }
 
 export interface UserProjectRole {
+  id: string;
+  userId: string;
   projectId: string;
-  projectName: string;
+  project: {
+    id: string;
+    name: string;
+    description?: string;
+    code: string;
+  };
   roleId: string;
-  roleName: string;
+  role: {
+    id: string;
+    name: string;
+    description?: string;
+  };
 }
+
 
 export interface Menu {
   id: string;

@@ -64,21 +64,22 @@ export default function DashboardPage() {
             </CardDescription>
           </Card>
         ) : (
-          projects.map((project) => (
+          projects.map((item) => (
             <Card 
-              key={project.projectId} 
+              key={item.projectId} 
               className="group hover:shadow-md transition-all cursor-pointer border-border/50 overflow-hidden"
-              onClick={() => router.push(`/dashboard/${project.projectId}`)}
+              onClick={() => router.push(`/dashboard/${item.projectId}`)}
             >
               <CardHeader className="bg-muted/30 pb-4">
                 <div className="h-10 w-10 rounded-lg bg-brand/10 flex items-center justify-center mb-3">
                    <FolderKanban className="h-5 w-5 text-brand" />
                 </div>
-                <CardTitle className="text-xl">{project.projectName}</CardTitle>
+                <CardTitle className="text-xl">{item.project.name}</CardTitle>
                 <CardDescription>
-                  Role: <span className="font-medium text-foreground">{project.roleName}</span>
+                  Role: <span className="font-medium text-foreground">{item.role.name}</span>
                 </CardDescription>
               </CardHeader>
+
               <CardContent className="pt-4 flex justify-between items-center bg-card">
                 <span className="text-sm font-medium text-muted-foreground">Enter Project</span>
                 <ArrowRight className="h-4 w-4 text-brand transform transition-transform group-hover:translate-x-1" />
