@@ -13,6 +13,8 @@ import {
   LogOut,
   ChevronFirst,
   ChevronLast,
+  ShieldAlert,
+  MenuSquare,
 } from "lucide-react"
 import { logout } from "@/lib/auth"
 
@@ -24,9 +26,11 @@ type Item = {
 
 const items: Item[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/projects", label: "Projects", icon: FolderKanban },
-  { href: "/users", label: "Users", icon: Users },
-  { href: "/profile", label: "Profile", icon: UserRound },
+  { href: "/dashboard/projects", label: "Projects", icon: FolderKanban },
+  { href: "/dashboard/users", label: "Users", icon: Users },
+  { href: "/dashboard/profile", label: "Profile", icon: UserRound },
+  { href: "/dashboard/menus", label: "Menus", icon: MenuSquare },
+  { href: "/dashboard/roles", label: "Roles", icon: ShieldAlert },
 ]
 
 export function Sidebar({ onClose }: { onClose?: () => void }) {

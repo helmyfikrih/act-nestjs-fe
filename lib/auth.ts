@@ -70,7 +70,7 @@ export async function resendVerification(email: string): Promise<MessageResponse
 export function logout(): void {
   if (typeof window !== "undefined") {
     localStorage.removeItem("access_token");
-    window.location.href = "/signin";
+    window.location.href = "/auth/signin";
   }
 }
 

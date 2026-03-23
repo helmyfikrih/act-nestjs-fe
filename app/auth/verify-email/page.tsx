@@ -74,8 +74,8 @@ export default function VerifyEmailPage() {
 
           <div className="flex flex-col gap-2 pt-2">
             {status === "success" && (
-              <Button asChild className="w-full bg-brand hover:bg-brand/90 text-white">
-                <Link href="/signin">Continue to Sign in</Link>
+              <Button asChild className="w-full h-11 bg-brand hover:opacity-90 font-medium text-base rounded-xl">
+                <Link href="/auth/signin">Continue to Sign in</Link>
               </Button>
             )}
             {status === "error" && (

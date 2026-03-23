@@ -4,9 +4,9 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { register as registerUser } from "@/lib/auth"
+import { useSearchParams } from "next/navigation"
+import { useState, useEffect } from "react"
+import { resendVerification } from "@/lib/auth"
 import { ApiError } from "@/lib/api"
 
 import { Button } from "@/components/ui/button"
@@ -14,34 +14,42 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { AlertCircle, UserPlus, Loader2, CheckCircle2 } from "lucide-react"
+import { AlertCircle, MailCheck, Loader2, CheckCircle2 } from "lucide-react"
 
 const schema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters").max(100),
   email: z.string().email("Enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
 })
 
 type FormData = z.infer<typeof schema>
 
-export default function SignUpPage() {
-  const router = useRouter()
+export default function ResendVerificationPage() {
+  const searchParams = useSearchParams()
+  const emailFromQuery = searchParams.get("email") ?? ""
+  const isRegistered = searchParams.get("registered") === "1"
+
   const [serverError, setServerError] = useState<string | null>(null)
-  const [successEmail, setSuccessEmail] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
-  } = useForm<FormData>({ resolver: zodResolver(schema) })
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: { email: emailFromQuery },
+  })
+
+  useEffect(() => {
+    if (emailFromQuery) setValue("email", emailFromQuery)
+  }, [emailFromQuery, setValue])
 
   async function onSubmit(data: FormData) {
     setServerError(null)
+    setSuccess(false)
     try {
-      await registerUser(data)
-      setSuccessEmail(data.email)
-      // Redirect to resend page pre-filled with email after short delay
-      setTimeout(() => router.push(`/resend-verification?email=${encodeURIComponent(data.email)}&registered=1`), 2000)
+      await resendVerification(data.email)
+      setSuccess(true)
     } catch (err) {
       setServerError(err instanceof ApiError ? err.message : "An unexpected error occurred.")
     }
@@ -53,12 +61,16 @@ export default function SignUpPage() {
         <CardHeader className="space-y-1 pb-4">
           <div className="flex items-center gap-2 mb-1">
             <div className="h-8 w-8 rounded-md bg-brand flex items-center justify-center">
-              <UserPlus className="h-4 w-4 text-white" />
+              <MailCheck className="h-4 w-4 text-white" />
             </div>
             <span className="text-xs font-medium text-muted-foreground uppercase tracking-widest">ACT App</span>
           </div>
-          <CardTitle className="text-2xl font-semibold">Create account</CardTitle>
-          <CardDescription>Register to access the Site Activity platform.</CardDescription>
+          <CardTitle className="text-2xl font-semibold">Resend Verification</CardTitle>
+          <CardDescription>
+            {isRegistered
+              ? "Your account was created! Check your inbox or resend the verification email below."
+              : "Enter your email to receive a new verification link."}
+          </CardDescription>
         </CardHeader>
 
         <CardContent>
@@ -69,32 +81,18 @@ export default function SignUpPage() {
             </Alert>
           )}
 
-          {successEmail && (
+          {success && (
             <Alert className="mb-4 border-brand/30 bg-brand/10 text-foreground">
               <CheckCircle2 className="h-4 w-4 text-brand" />
               <AlertDescription>
-                Account created! A verification email was sent to <strong>{successEmail}</strong>. Redirecting…
+                Verification email sent! Please check your inbox (and spam folder).
               </AlertDescription>
             </Alert>
           )}
 
           <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4" noValidate>
             <div className="grid gap-1.5">
-              <Label htmlFor="name">Full name</Label>
-              <Input
-                id="name"
-                type="text"
-                placeholder="Jane Doe"
-                autoComplete="name"
-                {...register("name")}
-              />
-              {errors.name && (
-                <p className="text-xs text-destructive-foreground">{errors.name.message}</p>
-              )}
-            </div>
-
-            <div className="grid gap-1.5">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Email address</Label>
               <Input
                 id="email"
                 type="email"
@@ -107,28 +105,22 @@ export default function SignUpPage() {
               )}
             </div>
 
-            <div className="grid gap-1.5">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Min. 6 characters"
-                autoComplete="new-password"
-                {...register("password")}
-              />
-              {errors.password && (
-                <p className="text-xs text-destructive-foreground">{errors.password.message}</p>
+            <Button
+              type="submit"
+              className="w-full bg-brand hover:bg-brand/90 text-white"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Sending…</>
+              ) : (
+                "Resend verification email"
               )}
-            </div>
-
-            <Button type="submit" className="w-full bg-brand hover:bg-brand/90 text-white" disabled={isSubmitting || !!successEmail}>
-              {isSubmitting ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Creating account…</> : "Sign up"}
             </Button>
           </form>
 
           <p className="mt-4 text-sm text-muted-foreground">
-            Already have an account?{" "}
-            <Link href="/signin" className="text-brand hover:underline font-medium">
+            Already verified?{" "}
+            <Link href="/auth/signin" className="text-brand hover:underline font-medium">
               Sign in
             </Link>
           </p>
