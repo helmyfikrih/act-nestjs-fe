@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { getRoles, createRole, updateRole, deleteRole, Role } from "@/lib/api-role"
+import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -98,7 +99,10 @@ export default function RolesPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead>Code</TableHead>
                     <TableHead>Role Name</TableHead>
+                    <TableHead>Group</TableHead>
+                    <TableHead>Type</TableHead>
                     <TableHead>Description</TableHead>
                     <TableHead>Created At</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
@@ -107,14 +111,21 @@ export default function RolesPage() {
                 <TableBody>
                   {roles.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={4} className="text-center h-24 text-muted-foreground">
+                      <TableCell colSpan={7} className="text-center h-24 text-muted-foreground">
                         No roles found.
                       </TableCell>
                     </TableRow>
                   ) : (
                     roles.map((role) => (
                       <TableRow key={role.id}>
+                        <TableCell className="font-mono text-xs">{role.code}</TableCell>
                         <TableCell className="font-medium">{role.name}</TableCell>
+                        <TableCell>{role.roleGroup}</TableCell>
+                        <TableCell>
+                          <Badge variant={role.isSystemRole ? "default" : "secondary"}>
+                            {role.isSystemRole ? "System" : "Custom"}
+                          </Badge>
+                        </TableCell>
                         <TableCell>{role.description || "-"}</TableCell>
                         <TableCell>{new Date(role.createdAt).toLocaleDateString()}</TableCell>
                         <TableCell className="text-right space-x-2">

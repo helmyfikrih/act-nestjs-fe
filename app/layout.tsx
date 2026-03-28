@@ -9,10 +9,11 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { Suspense } from "react"
 
 export const metadata: Metadata = {
-  title: "ACT App - Site Activity Management",
-  description: "Advanced Site Activity and Project Management system for telecommunications and engineering.",
-  generator: "ACT App",
+  title: "ACT Admin - Core Management",
+  description: "Advanced User, Role, and Menu Management system.",
+  generator: "ACT Admin",
 }
+
 
 export default function RootLayout({
   children,

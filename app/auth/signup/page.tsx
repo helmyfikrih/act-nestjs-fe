@@ -41,7 +41,7 @@ export default function SignUpPage() {
       await registerUser(data)
       setSuccessEmail(data.email)
       // Redirect to resend page pre-filled with email after short delay
-      setTimeout(() => router.push(`/resend-verification?email=${encodeURIComponent(data.email)}&registered=1`), 2000)
+      setTimeout(() => router.push(`/auth/resend-verification?email=${encodeURIComponent(data.email)}&registered=1`), 2000)
     } catch (err) {
       setServerError(err instanceof ApiError ? err.message : "An unexpected error occurred.")
     }

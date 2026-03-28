@@ -47,7 +47,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search projects, activities, or users..."
+              placeholder="Search users, roles, or menus..."
               className="w-full rounded-full border bg-background pl-9 pr-3 py-2 text-sm"
               aria-label="Search"
             />
@@ -62,15 +62,14 @@ export function Topbar({ onMenuClick }: TopbarProps) {
               <Bell className="size-5" aria-hidden />
               <span className="sr-only">Open notifications</span>
               <span className="absolute right-1 top-1 inline-flex items-center justify-center text-[10px] bg-red-500 text-white rounded-full h-4 min-w-4 px-1">
-                3
+                2
               </span>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-64">
               <DropdownMenuLabel>Notifications</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>New project assigned</DropdownMenuItem>
+              <DropdownMenuItem>User registered</DropdownMenuItem>
               <DropdownMenuItem>Permission updated</DropdownMenuItem>
-              <DropdownMenuItem>Security alert</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-muted-foreground">View all</DropdownMenuItem>
             </DropdownMenuContent>
@@ -86,10 +85,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
               <DropdownMenuLabel>Settings</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <button className="w-full text-left">Manage users</button>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <button className="w-full text-left">Network</button>
+                <Link href="/dashboard/users" className="w-full text-left">Manage users</Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <div className="px-2 py-1.5">
@@ -117,10 +113,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link href="/profile">Profile</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/projects">My projects</Link>
+                <Link href="/dashboard/profile">Profile</Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-destructive" onClick={() => logout()}>
@@ -133,3 +126,4 @@ export function Topbar({ onMenuClick }: TopbarProps) {
     </header>
   )
 }
+

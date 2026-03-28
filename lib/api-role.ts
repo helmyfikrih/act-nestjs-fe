@@ -1,16 +1,24 @@
 import { apiFetch } from "./api";
 
+export type RoleGroup = "INTERNAL" | "CUSTOMER" | "EXTERNAL";
+
 export interface Role {
   id: string;
+  code: string;
   name: string;
   description?: string;
+  roleGroup: RoleGroup;
+  isSystemRole: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface CreateRoleDto {
+  code: string;
   name: string;
   description?: string;
+  roleGroup: RoleGroup;
+  isSystemRole?: boolean;
 }
 
 export interface UpdateRoleDto extends Partial<CreateRoleDto> {}
