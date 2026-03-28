@@ -16,12 +16,16 @@ import { ColorThemePicker } from "@/components/color-theme"
 import { getTokenPayload, logout } from "@/lib/auth"
 import Link from "next/link"
 
+import { useFrontendMode } from "@/hooks/use-frontend-mode"
+import { ShieldCheck, Monitor } from "lucide-react"
+
 interface TopbarProps {
   onMenuClick?: () => void
 }
 
 export function Topbar({ onMenuClick }: TopbarProps) {
   const [q, setQ] = useState("")
+  const { mode, toggleMode } = useFrontendMode()
   const payload = getTokenPayload()
   const userName = payload?.name || "User"
   const userInitials = userName.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2)
@@ -84,10 +88,24 @@ export function Topbar({ onMenuClick }: TopbarProps) {
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel>Settings</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link href="/dashboard/users" className="w-full text-left">Manage users</Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
+              {(payload?.userType === "ROOT" || payload?.userType === "MANAGER") && (
+                <>
+                  <DropdownMenuItem onClick={toggleMode} className="cursor-pointer">
+                    {mode === "default" ? (
+                      <>
+                        <ShieldCheck className="mr-2 size-4" />
+                        <span>Switch to Root Panel</span>
+                      </>
+                    ) : (
+                      <>
+                        <Monitor className="mr-2 size-4" />
+                        <span>Back to Default App</span>
+                      </>
+                    )}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </>
+              )}
               <div className="px-2 py-1.5">
                 <ThemeToggle />
               </div>

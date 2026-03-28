@@ -7,6 +7,8 @@ import "./globals.css"
 import { Toaster } from "@/components/ui/sonner"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Suspense } from "react"
+import { AuthGuard } from "@/components/auth-guard"
+import { FrontendModeProvider } from "@/hooks/use-frontend-mode"
 
 export const metadata: Metadata = {
   title: "ACT Admin - Core Management",
@@ -31,11 +33,15 @@ export default function RootLayout({
     >
       <body className="font-sans">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <Suspense fallback={null}>
-            {children}
-            <Analytics />
-            <Toaster position="top-right" closeButton richColors />
-          </Suspense>
+          <FrontendModeProvider>
+            <AuthGuard>
+              <Suspense fallback={null}>
+                {children}
+              </Suspense>
+            </AuthGuard>
+          </FrontendModeProvider>
+          <Analytics />
+          <Toaster position="top-right" closeButton richColors />
         </ThemeProvider>
       </body>
     </html>
