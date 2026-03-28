@@ -19,6 +19,7 @@ interface ProfileData {
   phoneNumber: string | null
   address: string | null
   profilePicturePath: string | null
+  profilePictureUrl?: string | null
 }
 
 interface UserData {
@@ -163,7 +164,7 @@ export default function ProfilePage() {
         <CardContent className="pt-10 pb-10 flex flex-col items-center text-white space-y-4">
               <div className="relative group">
                   <Avatar className="h-28 w-28 border-4 border-white/20 shadow-2xl transition-transform duration-500 group-hover:scale-105">
-                      <AvatarImage src={user.profile?.profilePicturePath || ""} className="object-cover" />
+                      <AvatarImage src={user.profile?.profilePictureUrl || user.profile?.profilePicturePath || ""} className="object-cover" />
                       <AvatarFallback className="bg-white/10 text-3xl font-bold backdrop-blur-md">{userInitials}</AvatarFallback>
                   </Avatar>
                   
