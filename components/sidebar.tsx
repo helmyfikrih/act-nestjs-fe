@@ -17,6 +17,7 @@ import {
   ChevronRight,
   LayoutDashboard,
   Globe,
+  Building2,
 } from "lucide-react"
 import { logout } from "@/lib/auth"
 import { useFrontendMode } from "@/hooks/use-frontend-mode"
@@ -51,6 +52,7 @@ const menuGroups = [
           { href: "/dashboard/market-area", label: "Market Area", icon: Globe },
           { href: "/dashboard/country-units", label: "Country Unit", icon: Globe },
           { href: "/dashboard/customers", label: "Customers", icon: Users },
+          { href: "/dashboard/asp-companies", label: "ASP Company", icon: Building2 },
         ],
       },
       { href: "/dashboard/profile", label: "Profile", icon: UserRound },
