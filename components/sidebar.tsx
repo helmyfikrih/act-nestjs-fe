@@ -16,6 +16,7 @@ import {
   ChevronDown,
   ChevronRight,
   LayoutDashboard,
+  Globe,
 } from "lucide-react"
 import { logout } from "@/lib/auth"
 import { useFrontendMode } from "@/hooks/use-frontend-mode"
@@ -47,6 +48,7 @@ const menuGroups = [
           { href: "/dashboard/users", label: "Users", icon: Users },
           { href: "/dashboard/menus", label: "Menus", icon: MenuSquare },
           { href: "/dashboard/roles", label: "Roles", icon: ShieldAlert },
+          { href: "/dashboard/market-area", label: "Market Area", icon: Globe },
         ],
       },
       { href: "/dashboard/profile", label: "Profile", icon: UserRound },
