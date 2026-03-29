@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react"
 import { apiFetch, ApiError } from "@/lib/api"
-import { getTokenPayload } from "@/lib/auth"
+import { getTokenPayload, getAccessToken } from "@/lib/auth"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Label } from "@/components/ui/label"
@@ -130,7 +130,7 @@ export default function ProfilePage() {
     try {
         // We can't use apiFetch easily with FormData due to JSON.stringify in its body handling
         // So we use a manual fetch with the same logic
-        const token = localStorage.getItem("access_token")
+        const token = getAccessToken()
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/users/${user.id}/profile-picture`, {
             method: "POST",
             headers: {
