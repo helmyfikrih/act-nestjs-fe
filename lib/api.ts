@@ -17,9 +17,12 @@ export async function apiFetch<T>(
   const url = `${BASE_URL}${path}`;
 
   const headers: Record<string, string> = {
-    "Content-Type": "application/json",
     ...(options.headers as Record<string, string>),
   };
+
+  if (!(options.body instanceof FormData)) {
+    headers["Content-Type"] = "application/json";
+  }
 
   // Attach JWT if available
   if (typeof window !== "undefined") {

@@ -50,6 +50,7 @@ const menuGroups = [
           { href: "/dashboard/roles", label: "Roles", icon: ShieldAlert },
           { href: "/dashboard/market-area", label: "Market Area", icon: Globe },
           { href: "/dashboard/country-units", label: "Country Unit", icon: Globe },
+          { href: "/dashboard/customers", label: "Customers", icon: Users },
         ],
       },
       { href: "/dashboard/profile", label: "Profile", icon: UserRound },
