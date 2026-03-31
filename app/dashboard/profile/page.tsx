@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { User, Mail, Shield, Save, Loader2, Phone, MapPin, UserCircle, Camera } from "lucide-react"
 import { toast } from "sonner"
+import { uploadFileToTemp } from "@/lib/storage"
 
 interface ProfileData {
   id: string
@@ -36,6 +37,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
+  const [profilePictureTempKey, setProfilePictureTempKey] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [formData, setFormData] = useState({
@@ -78,15 +80,21 @@ export default function ProfilePage() {
       setIsSaving(true)
 
       try {
+          const profileData: any = {
+              fullName: formData.fullName,
+              phoneNumber: formData.phoneNumber,
+              address: formData.address
+          }
+
+          if (profilePictureTempKey) {
+              profileData.profilePictureTempKey = profilePictureTempKey
+          }
+
           const updatedUser = await apiFetch<UserData>(`/users/${user.id}`, {
               method: "PATCH",
               body: JSON.stringify({
                   name: formData.name,
-                  profile: {
-                      fullName: formData.fullName,
-                      phoneNumber: formData.phoneNumber,
-                      address: formData.address
-                  }
+                  profile: profileData
               })
           })
 
@@ -100,6 +108,7 @@ export default function ProfilePage() {
           }
 
           setUser(updatedUser)
+          setProfilePictureTempKey(null)
           toast.success("Profile updated successfully")
       } catch (err) {
           toast.error(err instanceof ApiError ? err.message : "Failed to update profile")
@@ -124,31 +133,25 @@ export default function ProfilePage() {
     }
 
     setIsUploading(true)
-    const formData = new FormData()
-    formData.append('file', file)
 
     try {
-        // We can't use apiFetch easily with FormData due to JSON.stringify in its body handling
-        // So we use a manual fetch with the same logic
-        const token = getAccessToken()
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/users/${user.id}/profile-picture`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            },
-            body: formData
-        })
-
-        if (!res.ok) {
-            const data = await res.json()
-            throw new Error(data.message || "Failed to upload image")
+        const tempKey = await uploadFileToTemp(file, "profile-picture")
+        setProfilePictureTempKey(tempKey)
+        
+        // Update local preview
+        if (user.profile) {
+            setUser({
+                ...user,
+                profile: {
+                    ...user.profile,
+                    profilePictureUrl: URL.createObjectURL(file)
+                }
+            })
         }
-
-        const updatedUser = await res.json()
-        setUser(updatedUser)
-        toast.success("Profile picture updated")
+        
+        toast.success("File uploaded successfully. Click Save to apply change.")
     } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Failed to upload profile picture")
+        toast.error(err instanceof Error ? err.message : "Failed to upload image")
     } finally {
         setIsUploading(false)
         if (fileInputRef.current) fileInputRef.current.value = ""

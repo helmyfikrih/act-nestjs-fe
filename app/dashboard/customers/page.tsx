@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Plus, Edit2, Trash2, Loader2, Users } from "lucide-react"
 import { toast } from "sonner"
 import { CustomerDialog } from "./components/customer-dialog"
+import { uploadFileToTemp } from "@/lib/storage"
 
 export default function CustomerPage() {
   const [customers, setCustomers] = useState<Customer[]>([])
@@ -56,18 +57,19 @@ export default function CustomerPage() {
 
   const handleSave = async (data: any, file?: File) => {
     try {
-      let savedCustomer;
+      if (file) {
+        const tempKey = await uploadFileToTemp(file, "customer-logo");
+        data.logoTempKey = tempKey;
+      }
+
       if (customerToEdit) {
-        savedCustomer = await updateCustomer(customerToEdit.id, data)
+        await updateCustomer(customerToEdit.id, data)
         toast.success("Customer updated successfully")
       } else {
-        savedCustomer = await createCustomer(data)
+        await createCustomer(data)
         toast.success("Customer created successfully")
       }
       
-      if (file) {
-        await uploadCustomerLogo(savedCustomer.id, file);
-      }
       fetchCustomers()
     } catch (err: any) {
       toast.error(err.message || "Failed to save customer")

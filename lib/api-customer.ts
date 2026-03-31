@@ -19,6 +19,7 @@ export interface CreateCustomerDto {
   code: string;
   name: string;
   logoPath?: string;
+  logoTempKey?: string;
   countryRegion?: string;
   countryUnitId: string;
   isActive?: boolean;
